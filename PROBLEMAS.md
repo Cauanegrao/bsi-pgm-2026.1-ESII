@@ -1,8 +1,10 @@
 # Problemas Identificados — Leitura Inicial do Código
 
-Este arquivo é preenchido pelos estudantes na Aula 1 após a leitura do código legado.
-Descreva em linguagem livre tudo que parecer estranho, errado ou difícil de entender.
-Não é necessário usar termos técnicos neste momento.
+documento de requisitos (RNF03) diz que deveria ser fácil adicionar novos tipos de equipamentos, mas no código eu teria que mexer em vários lugares diferentes e criar várias condições
+
+envio do e-mail, com a devolução e o empréstimo, caso o usuário mude de e-mail, terá de fazer diversas mudanças no sistema
+
+As listas com os nomes dos equipamentos e os registros de empréstimos estão fora da classe do sistema, jogadas no início do arquivo.
 
 ---
 
