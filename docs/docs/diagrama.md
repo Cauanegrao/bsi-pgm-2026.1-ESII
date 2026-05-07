@@ -35,3 +35,68 @@ sequenceDiagram
  end
 ```
 
+Parte 2 — Diagramas de sequência
+* UC02
+  ```mermaid
+
+    sequenceDiagram
+    autonumber
+    actor Atendente
+    participant main as main.py (Visão)
+    participant servico as ServicoEmprestimo (Negócio)
+    participant repo as RepositorioEmprestimo (Dados)
+    participant notif as Notificador (Infra)
+
+    Atendente->>main: seleciona "2-Devolver" e informa ID
+    activate main
+    main->>servico: registrar_devolucao(emprestimo_id)
+    activate servico
+    
+    servico->>repo: buscar_emprestimo_por_id(emprestimo_id)
+    repo-->>servico: objeto Emprestimo
+    
+    alt Empréstimo existe e está ativo
+        servico->>servico: calcular_multa(data_atual)
+        servico->>repo: atualizar_status_devolucao(emprestimo_id)
+        servico->>repo: liberar_equipamento(equip_id)
+        servico->>notif: enviar_email_devolucao(email, multa)
+        servico-->>main: Retorna dados da devolução (multa)
+    else Empréstimo inválido ou já devolvido
+        servico-->>main: Retorna Erro
+    end
+    
+    deactivate servico
+    main-->>Atendente: Exibe confirmação e valor da multa
+    deactivate main
+
+* UC03
+
+  ```Mermaid
+  sequenceDiagram
+    autonumber
+    actor Coordenador
+    participant main as main.py (Visão)
+    participant servico as ServicoEmprestimo (Negócio)
+    participant repo as RepositorioEmprestimo (Dados)
+    participant notif as Notificador (Infra)
+
+    Coordenador->>main: seleciona "3-Atrasados"
+    activate main
+    main->>servico: processar_atrasados()
+    activate servico
+    
+    servico->>repo: obter_todos_emprestimos()
+    repo-->>servico: lista_emprestimos
+    
+    loop Para cada emprestimo na lista
+        servico->>servico: verificar_atraso(data_atual)
+        alt Em atraso e não devolvido
+            servico->>servico: calcular_multa_acumulada()
+            servico->>notif: notificar_atraso_por_email(email)
+            servico-->>main: envia dados do atrasado
+        end
+    end
+    
+    deactivate servico
+    main-->>Coordenador: Exibe lista de atrasados ou "Nenhum atraso"
+    deactivate main
