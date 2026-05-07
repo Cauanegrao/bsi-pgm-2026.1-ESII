@@ -16,11 +16,15 @@ Ocultamento de informação: esconder dentro de um módulo tudo o que pode mudar
 ### (b) Relações entre os princípios
 Ocultamento de informação habilita baixo acoplamento porque, ao esconder detalhes internos, a dependência fica restrita à interface pública – mudanças internas não se propagam. Ele se relaciona com coesão: módulos coesos naturalmente ocultam informação, pois têm um assunto único
 ### (c) Aplicação ao projeto v2.0
-models/ (Entidades): Contém as classes Equipamento e Emprestimo como dataclasses. Elas têm alta coesão por representarem apenas os dados e regras essenciais do domínio, sem saberem como os dados são salvos ou exibidos.
-services/ServicoEmprestimo: Responsável por coordenar as regras de negócio dos Casos de Uso. Esta classe foca na lógica, delegando a persistência e a notificação para outros módulos.
-services/Notificador: Classe dedicada exclusivamente ao envio de avisos. A separação é justificada pelo SRP: o motivo para mudar o canal de comunicação é diferente do motivo para mudar uma regra de multa.
-repositories/RepositorioEmprestimo: Camada que aplica o ocultamento de informação. O restante do sistema não sabe se os dados estão em listas, arquivos JSON ou banco de dados; ele depende apenas de uma interface estável para salvar e buscar informações.
-main.py (Interface/Configuração): Contém apenas a lógica da interface de linha de comando (CLI) e a montagem do sistema. Apresenta baixo acoplamento com o negócio, garantindo que mudanças no menu não afetem as regras de cálculo de multas.
+* models/ (Entidades): Contém as classes Equipamento e Emprestimo como dataclasses. Elas têm alta coesão por representarem apenas os dados e regras essenciais do domínio, sem saberem como os dados são salvos ou exibidos.
+  
+* services/ServicoEmprestimo: Responsável por coordenar as regras de negócio dos Casos de Uso. Esta classe foca na lógica, delegando a persistência e a notificação para outros módulos.
+  
+* services/Notificador: Classe dedicada exclusivamente ao envio de avisos. A separação é justificada pelo SRP: o motivo para mudar o canal de comunicação é diferente do motivo para mudar uma regra de multa.
+  
+* repositories/RepositorioEmprestimo: Camada que aplica o ocultamento de informação. O restante do sistema não sabe se os dados estão em listas, arquivos JSON ou banco de dados; ele depende apenas de uma interface estável para salvar e buscar informações.
+
+* main.py (Interface/Configuração): Contém apenas a lógica da interface de linha de comando (CLI) e a montagem do sistema. Apresenta baixo acoplamento com o negócio, garantindo que mudanças no menu não afetem as regras de cálculo de multas.
 ## Questão 3 — Crítica fundamentada à documentação do sistema legado
 ### (a) Pontos frágeis
 Violação de ocultamento de informação e coesão. A classe Sistema acessa diretamente variáveis globais equipamentos e emprestimos_registrados (Cap. 5, seção 5.3). Gerando acoplamento ruim: qualquer mudança no formato dessas listas quebra os métodos.
