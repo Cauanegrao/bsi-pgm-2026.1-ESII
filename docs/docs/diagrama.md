@@ -71,8 +71,9 @@ Parte 2 — Diagramas de sequência
 
 * UC03
 
-  ```Mermaid
-  sequenceDiagram
+  ```mermaid
+  
+    sequenceDiagram
     autonumber
     actor Coordenador
     participant main as main.py (Visão)
