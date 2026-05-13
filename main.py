@@ -1,15 +1,8 @@
-# Main: Mediar a interação com o usuário final.
+# Main: Mediar a interação com o utilizador final.
+
 from services.servico_emprestimo import ServicoEmprestimo
 
 sistema = ServicoEmprestimo()
-
-from repositories.repositorio_emprestimo import RepositorioEmprestimo
-from services.notificador import Notificador
-from services.servico_emprestimo import ServicoEmprestimo
-
-repo = RepositorioEmprestimo()
-notif = Notificador()
-sistema = ServicoEmprestimo(repo, notif)
 
 def exibir_menu():
     while True:
@@ -22,34 +15,42 @@ def exibir_menu():
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            id_e = int(input("ID do Equipamento: "))
-            nome = input("Nome do Aluno: ")
-            email = input("E-mail: ")
-            if sistema.registrar(id_e, nome, email, 7):
-                print(">>> Sucesso! Verifique a simulação de e-mail acima.")
-            else:
-                print(">>> Erro: Equipamento indisponível ou inexistente.")
+            try:
+                id_e = int(input("ID do Equipamento: "))
+                nome = input("Nome do Aluno: ")
+                email = input("E-mail: ")
+                # O sistema usa 7 dias como padrão para o empréstimo
+                if sistema.registrar(id_e, nome, email, 7):
+                    print(">>> Sucesso! Verifique a simulação de e-mail acima.")
+                else:
+                    print(">>> Erro: Equipamento indisponível ou inexistente.")
+            except ValueError:
+                print(">>> Erro: O ID deve ser um número inteiro.")
 
         elif opcao == "2":
-            id_emp = int(input("ID do Empréstimo: "))
-            if sistema.devolver(id_emp):
-                print(">>> Equipamento devolvido com sucesso!")
-            else:
-                print(">>> Erro: Empréstimo não encontrado ou já devolvido.")
+            try:
+                id_emp = int(input("ID do Empréstimo: "))
+                if sistema.devolver(id_emp):
+                    print(">>> Equipamento devolvido com sucesso!")
+                else:
+                    print(">>> Erro: Empréstimo não encontrado ou já devolvido.")
+            except ValueError:
+                print(">>> Erro: O ID deve ser um número inteiro.")
 
         elif opcao == "3":
             atrasados = sistema.listar_atrasados()
             if not atrasados:
-                print(">>> Ninguém está em atraso hoje.")
+                print(">>> Não existem empréstimos em atraso.")
             else:
+                print("\n--- LISTA DE ATRASADOS ---")
                 for emp in atrasados:
-                    print(f"- Aluno: {emp['nome_aluno']} | Entrega: {emp['data_devolucao']}")
+                    print(f"- Aluno: {emp['nome_aluno']} | Item: {emp['item_nome']} | Entrega: {emp['data_devolucao']}")
 
         elif opcao == "4":
-            print("Saindo...")
+            print("A encerrar o sistema...")
             break
         else:
-            print("Opção inválida!")
+            print("Opção inválida! Tente novamente.")
 
 if __name__ == "__main__":
     exibir_menu()
