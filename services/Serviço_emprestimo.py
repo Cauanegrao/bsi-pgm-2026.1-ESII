@@ -17,6 +17,7 @@ class ServicoEmprestimo:
             
             novo_emprestimo = {
                 "id": len(self.repo.listar_todos()) + 1,
+                "equip_id": equip_id,
                 "nome_aluno": nome,
                 "email_aluno": email,
                 "item_nome": equip["nome"],
