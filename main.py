@@ -1,4 +1,7 @@
 # Main: Mediar a interação com o usuário final.
+from services.servico_emprestimo import ServicoEmprestimo
+
+sistema = ServicoEmprestimo()
 
 from repositories.repositorio_emprestimo import RepositorioEmprestimo
 from services.notificador import Notificador
