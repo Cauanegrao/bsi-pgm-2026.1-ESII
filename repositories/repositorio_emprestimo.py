@@ -2,7 +2,7 @@
 
 class RepositorioEmprestimo:
     def __init__(self):
-        # Dados que antes eram globais agora são protegidos aqui
+        # Banco de dados temporário (em memória)
         self.equipamentos = [
             {"id": 1, "nome": "Notebook Dell", "tipo": "Notebook", "disponivel": True},
             {"id": 2, "nome": "Projetor Epson", "tipo": "Projetor", "disponivel": True}
