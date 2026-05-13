@@ -22,4 +22,6 @@ Exemplo de entradas:
 
 ## Revisão com vocabulário técnico
 
-*(Este espaço será preenchido após a Aula 4, quando os termos técnicos corretos forem aprendidos)*
+* O sistema apresenta dificuldade em cumprir o requisito RNF03, pois a falta de uma estrutura polimórfica exige modificações em múltiplos pontos do código para adicionar novos equipamentos, caracterizando um design rígido e pouco coeso.
+* Existe uma mistura de responsabilidades onde a lógica de negócio está fundida com os serviços de notificação; este acoplamento viola o Princípio da Responsabilidade Única (SRP), exigindo alterações estruturais sempre que houver mudanças nos dados de contacto ou canais de comunicação.
+* A manutenção de listas de dados fora das classes expõe a estrutura interna do sistema ao ambiente global, impedindo o ocultamento de informação e comprometendo a integridade e a segurança dos registos de empréstimos e equipamentos.
