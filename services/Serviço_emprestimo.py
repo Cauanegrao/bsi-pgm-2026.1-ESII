@@ -1,13 +1,10 @@
 # ServicoEmprestimo: Executar as regras de negócio de locação.
-
-from repositories.repositorio_emprestimo import RepositorioEmprestimo
-from services.notificador import Notificador
 from datetime import date, timedelta
 
 class ServicoEmprestimo:
-    def __init__(self):
-        self.repo = RepositorioEmprestimo()
-        self.notificador = Notificador()
+    def __init__(self, repositorio_emprestimo, notificador):
+        self.repo = repositorio_emprestimo
+        self.notificador = notificador
 
     def registrar(self, equip_id: int, nome: str, email: str, dias: int):
         equip = self.repo.buscar_por_id(equip_id)
