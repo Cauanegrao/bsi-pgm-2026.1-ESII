@@ -1,10 +1,15 @@
 # Main: Mediar a interação com o utilizador final.
 
+from repositories.repositorio_emprestimo import RepositorioEmprestimo
+from services.notificador import Notificador
 from services.servico_emprestimo import ServicoEmprestimo
 
-sistema = ServicoEmprestimo()
-
 def exibir_menu():
+    repo_concreto = RepositorioEmprestimo()
+    notificador_concreto = Notificador()
+
+    sistema = ServicoEmprestimo(repo_concreto, notificador_concreto)
+
     while True:
         print("\n--- SISTEMA DE EMPRÉSTIMOS UFRA v2.0 ---")
         print("1. Registrar Empréstimo")
