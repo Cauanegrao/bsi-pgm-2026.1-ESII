@@ -1,4 +1,4 @@
-name: CI — Pipeline de Testes (Aula 08)
+name: CI - Test Pipeline (Aula 08)
 
 on:
   push:
@@ -11,19 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Copiar os arquivos do repositorio
+    - name: Checkout repository files
       uses: actions/checkout@v4
 
-    - name: Configurar o Python 3.11
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
 
-    - name: Instalar dependencias de desenvolvimento
+    - name: Install development dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
 
-    - name: Executar os testes com Cobertura (Pytest-cov)
+    - name: Run tests with Coverage (Pytest-cov)
       run: |
         pytest --cov=repositórios --cov=serviços --cov-report=term-missing
