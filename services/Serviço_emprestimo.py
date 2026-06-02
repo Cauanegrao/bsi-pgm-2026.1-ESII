@@ -1,41 +1,40 @@
 # ServicoEmprestimo: Executar as regras de negócio de locação.
+from repositórios.interfaces import IRepositorioEmprestimo
+from serviços.interfaces import INotificador
 from datetime import date, timedelta
 
 class ServicoEmprestimo:
-    def __init__(self, repositorio_emprestimo, notificador):
-        self.repo = repositorio_emprestimo
+    def __init__(self, repositorio: IRepositorioEmprestimo, notificador: INotificador):
+        self.repositorio = repositorio
         self.notificador = notificador
 
-    def registrar(self, equip_id: int, nome: str, email: str, dias: int):
-        equip = self.repo.buscar_por_id(equip_id)
-        if equip and equip["disponivel"]:
-            equip["disponivel"] = False
+    def registrar(self, equip_id: int, nome: str, email: str, dias: int) -> bool:
+        equip = self.repositorio.buscar_equipamento(equip_id)
+        if equip and equip.get("disponivel", True):
+            self.repositorio.marcar_indisponivel(equip_id)
             data_dev = date.today() + timedelta(days=dias)
             
             novo_emprestimo = {
-                "id": len(self.repo.listar_todos()) + 1,
+                "id": self.repositorio.proximo_id_emprestimo(),
                 "equip_id": equip_id,
                 "nome_aluno": nome,
                 "email_aluno": email,
-                "item_nome": equip["nome"],
                 "data_devolucao": data_dev,
                 "devolvido": False
             }
             
-            self.repo.salvar(novo_emprestimo)
-            self.notificador.enviar_confirmacao(email, equip["nome"])
+            self.repositorio.salvar_emprestimo(novo_emprestimo)
+            self.notificador.notificar_emprestimo(email, data_dev)
             return True
         return False
 
-    def devolver(self, emprestimo_id: int):
-        for emp in self.repo.listar_todos():
-            if emp["id"] == emprestimo_id and not emp["devolvido"]:
-                emp["devolvido"] = True
-                equip = self.repo.buscar_por_id(emp["equip_id"])
-                if equip: equip["disponivel"] = True
-                return True
-        return False
+    def devolver(self, emprestimo_id: int) -> float:
+        emp = self.repositorio.buscar_emprestimo(emprestimo_id)
+        if emp and not emp.get("devolvido", False):
+            self.repositorio.marcar_devolvido(emprestimo_id)
+            self.repositorio.marcar_disponivel(emp["equip_id"])
+            return 0.0  
+        return 0.0
 
-    def listar_atrasados(self):
-        hoje = date.today()
-        return [e for e in self.repo.listar_todos() if e["data_devolucao"] < hoje and not e["devolvido"]]
+    def listar_atrasados(self) -> list:
+        return self.repositorio.listar_em_atraso()
