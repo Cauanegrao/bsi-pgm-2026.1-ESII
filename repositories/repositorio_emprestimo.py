@@ -1,6 +1,7 @@
 # RepositorioEmprestimo: Gerenciar o armazenamento dos dados do sistema.
+from repositórios.interfaces import IRepositorioEmprestimo
 
-class RepositorioEmprestimo:
+class RepositorioEmprestimo(IRepositorioEmprestimo):
     def __init__(self):
         # Banco de dados temporário (em memória)
         self.equipamentos = [
