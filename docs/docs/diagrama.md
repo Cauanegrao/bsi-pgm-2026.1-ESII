@@ -101,3 +101,51 @@ Parte 2 — Diagramas de sequência
     deactivate servico
     main-->>Coordenador: Exibe lista de atrasados ou "Nenhum atraso"
     deactivate main
+
+## Diagrama de classes — v2.0
+
+```mermaid
+
+classDiagram
+    class IRepositorioEmprestimo {
+        <<interface>>
+        +buscar_equipamento(id: int)
+        +salvar_emprestimo(emprestimo)
+        +buscar_emprestimo(id: int)
+        +marcar_indisponivel(equip_id: int)
+        +marcar_disponivel(equip_id: int)
+        +marcar_devolvido(emprestimo_id: int)
+        +listar_em_atraso() list
+        +proximo_id_emprestimo() int
+    }
+
+    class INotificador {
+        <<interface>>
+        +notificar_emprestimo(email: str, data_devolucao: date)
+        +notificar_devolucao(email: str, multa: float)
+        +notificar_atraso(email: str)
+    }
+
+    class RepositorioEmprestimo {
+        +list equipamentos
+        +list emprestimos
+        +buscar_por_id(id: int)
+        +salvar(objeto)
+        +listar_todos()
+    }
+
+    class Notificador {
+    }
+
+    class ServicoEmprestimo {
+        +IRepositorioEmprestimo repositorio
+        +INotificador notificador
+        +registrar(equip_id: int, nome: str, email: str, dias: int) bool
+        +devolver(emprestimo_id: int) float
+        +listar_atrasados() list
+    }
+
+    ServicoEmprestimo --> IRepositorioEmprestimo : usa
+    ServicoEmprestimo --> INotificador : usa
+    RepositorioEmprestimo ..|> IRepositorioEmprestimo : implementa
+    Notificador ..|> INotificador : implementa
