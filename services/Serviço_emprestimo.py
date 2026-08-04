@@ -1,6 +1,7 @@
 # ServicoEmprestimo: Executar as regras de negócio de locação.
 from datetime import date, timedelta
 from services.observer import Subject 
+from services.evento import Evento
 
 class ServicoEmprestimo(Subject): 
     def __init__(self, repositorio_emprestimo): 
@@ -25,11 +26,12 @@ class ServicoEmprestimo(Subject):
             
             self.repo.salvar(novo_emprestimo)
             
-            self.notificar({
-                "tipo": "emprestimo", 
-                "email": email, 
-                "data": data_dev
-            })
+            # Instancia o objeto Evento em vez do dicionário dict
+            self.notificar(Evento(
+                tipo="emprestimo", 
+                email=email, 
+                data=data_dev
+            ))
             
             return True
         return False
@@ -43,11 +45,12 @@ class ServicoEmprestimo(Subject):
                     equip["disponivel"] = True
 
                 multa = 0.0  
-                self.notificar({
-                    "tipo": "devolucao", 
-                    "email": emp["email_aluno"], 
-                    "multa": multa
-                })
+                # Instancia o objeto Evento em vez do dicionário dict
+                self.notificar(Evento(
+                    tipo="devolucao", 
+                    email=emp["email_aluno"], 
+                    multa=multa
+                ))
                 
                 return True
         return False
@@ -57,9 +60,10 @@ class ServicoEmprestimo(Subject):
         atrasados = [e for e in self.repo.listar_todos() if e["data_devolucao"] < hoje and not e["devolvido"]]
         
         for emp in atrasados:
-            self.notificar({
-                "tipo": "atraso", 
-                "email": emp["email_aluno"]
-            })
+            # Instancia o objeto Evento em vez do dicionário dict
+            self.notificar(Evento(
+                tipo="atraso", 
+                email=emp["email_aluno"]
+            ))
             
         return atrasados
