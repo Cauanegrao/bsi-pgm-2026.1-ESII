@@ -23,3 +23,15 @@ A composição soluciona esse problema ao isolar o algoritmo volátil em classes
 A introdução do padrão Observer no `ServicoEmprestimo` promoveu melhorias profundas em relação aos princípios SRP, OCP e DIP (Valente, Cap. 6). Quanto ao SRP (Princípio da Responsabilidade Única), o serviço agora foca exclusivamente nas regras de negócio de empréstimo e devolução, deixando de gerenciar canais de envio de notificações. O OCP é atendido porque novos destinos ou mídias de alerta (como SMS ou Logs) podem ser adicionados por meio de novos observers concretos registrados na fachada, sem que uma única linha do serviço precise ser alterada. O DIP (Princípio da Inversão de Dependência) é respeitado na medida em que o `ServicoEmprestimo` (módulo de alto nível) deixa de depender de implementações concretas de envio e passa a interagir estritamente com a abstração `Subject`/`Observer`.
 
 Por outro lado, o tráfego de dados utilizando um dicionário comum (`dict`) introduz manifestamente o code smell de *Primitive Obsession*. Isso ocorre porque dicionários não possuem verificação de tipos em tempo de compilação, tornando a comunicação frágil e propensa a erros caso chaves obrigatórias (como `"email"` ou `"tipo"`) sejam digitadas incorretamente. Apesar disso, o uso do `dict` foi uma decisão pedagógica consciente nesta aula para reduzir a complexidade inicial e isolar o aprendizado na mecânica de comportamento e desacoplamento do padrão Observer, estabelecendo uma dívida técnica controlada que será devidamente refatorada para uma `@dataclass Evento` tipada na próxima aula.
+
+
+## Aula 12 — Dívida Técnica e Refactoring Seguro
+
+### 1. Dívida Técnica e Aceleração Inicial vs. Custo Contínuo
+A dívida técnica é criada quando tomamos atalhos de implementação para entregar valor mais rápido — como utilizar dicionários genéricos (`dict`) em vez de estruturas tipadas para eventos. Embora acelere o desenvolvimento inicial, o custo contínuo surge na forma de falta de autocompletar, erros em tempo de execução (*KeyError*) e dificuldade na manutenção. A refatoração contínua paga essa dívida sem alterar o comportamento externo da aplicação.
+
+### 2. O Papel das Dataclasses na Eliminação da Obsessão por Primitivos
+A introdução da `@dataclass Evento` substituiu estruturas fracamente tipadas por uma abstração clara e autodocumentada. Isso elimina a obsessão por primitivos, reduz o acoplamento entre emissor e observador e torna os contratos entre módulos explícitos.
+
+### 3. A Importância da Rede de Segurança (pytest) no Refactoring
+A regra de ouro do *refactoring* é que o comportamento externo não deve mudar. Ter uma suíte de testes automatizados (`pytest`) e integração contínua (GitHub Actions) atuando como rede de segurança garante que melhorias internas na qualidade do código possam ser feitas de forma destemida e sem introduzir regressões.
